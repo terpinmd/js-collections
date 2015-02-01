@@ -1,0 +1,27 @@
+<script src="collections.js"></script>
+
+<script type="text/javascript">
+
+
+var list = new Collections.list();
+
+list.add("item");
+list.add("item2");
+list.add({
+  name : "foo"
+});
+list.add("item3");
+list.add({
+  name : "bar"
+});
+//console.log(list.contains("item2"));
+var findObj = function(el){
+  return el.name === "foo";
+};
+console.log(list.contains("item2"));
+console.log(list.contains(findObj));
+
+var newList = new Collections.list();
+console.log(list.addAll(newList));
+
+</script>
