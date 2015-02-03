@@ -5,11 +5,15 @@
 
 
   _Collections.prototype.list = function(){
+      var self = this;
+
       var _list = function(){
-        var elements = [];
+        
+        var _elements = [];
+
         var me = this;
 
-        var iterate = function(items, func){
+        var _iterate = function(items, func){
           for(var i = 0; i < items.length ; i++){
             var result = func.call(me, items[i], i);
             if(result === true){
@@ -18,55 +22,98 @@
           }  
         };
 
-        this.add = function(item){
-          elements.push(item);
-        }
-        
-        this.addAll = function(collection){
-          if(collection instanceof _list){
-            console.log("yooooooooooooooooooooooooo");
+        var _add = function(item, index){
+          if(parseInt(index) > 0){
+            _elements.splice(index, 0, item);
           } else{
-            console.log("noo");
+            _elements.push(item);  
           }
         };
 
+        this.add = function(item){
+          _add(item);
+        }
+        
+        this.addAt = function(item, index){
+          _add(item, index);
+        }
+
+        this.addAll = function(otherList){
+          var me = this;
+          otherList.each(function(el){
+            me.add(el);
+          });            
+        };
+
+        this.get = function(index){
+          return _elements[index];
+        }
+
         this.clear = function(){
-          elements = null;
-          elements = [];
+          _elements = null;
+          _elements = [];
         };
 
         this.isEmpty = function(){
-          return this.elements.length === 0;
+          return this._elements.length === 0;
         };
 
-        this.contains = function(item){
-          var found = false;
-          iterate(elements, function(value, idx){
-            var el = elements[idx];
+
+        this.containsAll = function(otherList){
+          var me = this;
+          var exists = false;
+          otherList.each(function(el){
+            exists = me.contains(el);
+          });
+          return exists;
+        };
+
+
+        var _find = function(item){
+          var found;
+          _iterate(_elements, function(value, idx){
+            var el = _elements[idx];
             if(el === item){
-              found = true;
-              return true;
-            } else{
-              if(typeof item === "function"){
+              found = el;
+              return found;
+            } else if(typeof item === "function"){
                 found = item(el);
-                if(found) return true;
-              } 
+                if(found) 
+                  return found;
+            } else{
+              return undefined;
             }
           });
           return found;
+        }
+
+
+
+        this.contains = function(item){
+          return _find(item) !== undefined;
         };
 
         this.size = function(){
-          return elements.length;
+          return _elements.length;
         };
+
+        this.each = function(_iterateFn){
+          return _iterate(_elements, _iterateFn);
+        }
+
       };
     return new _list();
   }
 
   exports.Collections =  new _Collections();
-  
-})(this);
 
+function* foo(){
+  
+}
+
+
+
+})(this);
 
 
 /*
@@ -90,3 +137,4 @@
 })(this);
 
 */
+
